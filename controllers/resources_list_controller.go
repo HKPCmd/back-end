@@ -20,3 +20,15 @@ func GetNamespaces(c *gin.Context) {
 	c.JSON(http.StatusOK, namespaceList)
 }
 
+func GetPods(c *gin.Context) {
+	namespace := c.Query("namespace")
+	client := getKubeConfig()
+
+	podsList, err := svc.ListPodNameAndStatus(client, namespace)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, podsList)
+}

@@ -24,3 +24,18 @@ func ListNamespaces(client kubernetes.Interface) ([]string, error) {
 	return namespaceList, nil
 } 
 
+func ListPodNameAndStatus(client kubernetes.Interface, namespace string) (map[string]string, error) {
+	fmt.Println("Get Kubernetes Pods")
+	pods, err := client.CoreV1().Pods(namespace).List(context.Background(), metav1.ListOptions{})
+	if err != nil {
+		err = fmt.Errorf("error getting pods: %v \n", err)
+		return nil, err
+	}
+
+	podNamesAndStatus := make(map[string]string)
+	for _, pod := range pods.Items {
+		podNamesAndStatus[pod.Name] = string(pod.Status.Phase)
+	}
+
+	return podNamesAndStatus, nil  
+}
