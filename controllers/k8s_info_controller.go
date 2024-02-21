@@ -7,9 +7,10 @@ import (
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
+	restclient "k8s.io/client-go/rest"
 )
 
-func getKubeConfig() (kubernetes.Interface){
+func getKubeConfig() (kubernetes.Interface, *restclient.Config){
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
 		fmt.Printf("error getting user home dir: %v\n", err)
@@ -30,5 +31,5 @@ func getKubeConfig() (kubernetes.Interface){
 		os.Exit(1)
 	}
 
-	return clientset
+	return clientset, kubeConfig
 }
