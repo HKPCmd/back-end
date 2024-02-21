@@ -9,7 +9,7 @@ import (
 )
 
 func GetNamespaces(c *gin.Context) {
-	client := getKubeConfig()
+	client, _ := getKubeConfig()
 
 	namespaceList, err := svc.ListNamespaces(client)
 	if err != nil {
@@ -22,7 +22,7 @@ func GetNamespaces(c *gin.Context) {
 
 func GetPods(c *gin.Context) {
 	namespace := c.Query("namespace")
-	client := getKubeConfig()
+	client, _ := getKubeConfig()
 
 	podsList, err := svc.ListPodNameAndStatus(client, namespace)
 	if err != nil {
