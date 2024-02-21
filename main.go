@@ -10,6 +10,7 @@ import (
 func main() {
 	r := gin.Default()
 
+	r.GET("/context", controllers.GetCurrentContext)
 	r.GET("/namespaces", controllers.GetNamespaces)
 	r.GET("/pods", controllers.GetPods)
 	r.GET("/ws", controllers.HandleConnections)
