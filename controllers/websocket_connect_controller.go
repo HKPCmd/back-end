@@ -34,21 +34,13 @@ func HandleConnections(c *gin.Context) {
 			break
 		}
 
-		stdout, stderr, err := svc.ExecCommandInPod(client, config, msg)
+		log.Printf(msg.Command)
+		log.Printf(msg.PodName)
+
+		err = svc.ExecCommandInPod(client, config, msg, ws)
 		if err != nil {
 			log.Printf("error executing command in pod: %v", err)
-			ws.WriteJSON(models.Response{
-				Command: msg.Command,
-				Stdout: "",
-				Stderr: stderr,
-			})
 			continue
 		}
-
-		ws.WriteJSON(models.Response{
-			Command: msg.Command,
-			Stdout: stdout,
-			Stderr: stderr,
-		})
 	}
 }
