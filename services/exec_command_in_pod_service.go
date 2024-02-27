@@ -5,6 +5,7 @@ import (
 	"log"
 	"fmt"
 	"context"
+	"strings"
 
 	"main/models"
 	"github.com/gorilla/websocket"
@@ -45,6 +46,10 @@ func (w *websocketWriter) Write(p []byte) (n int, err error) {
 
 func ExecCommandInPod(client kubernetes.Interface, config *restclient.Config, msg models.Message, ws *websocket.Conn) error {
 	command, podName, namespace := msg.Command, msg.PodName, msg.Namespace
+
+	if strings.Contains(command, "install") && !strings.Contains(command, "-y") {
+		command += " -y"
+	}
 
 	containerName, err := getContainerNameInPod(client, podName, namespace)
 	if err != nil {
@@ -97,7 +102,7 @@ func ExecCommandInPod(client kubernetes.Interface, config *restclient.Config, ms
 		Stdout: stdout,
 		Stderr: stderr,
 	})
-	log.Printf(stderr)
+
 	if err != nil {
 		log.Printf("error exec.Stream: %v", err)
 		return err
