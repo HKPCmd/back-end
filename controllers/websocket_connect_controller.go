@@ -65,7 +65,13 @@ func HandleConnections(c *gin.Context) {
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			log.Printf("error: %v", err)
-			
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+				log.Printf("websocket closed unexpectedly: %v", err)
+			} else if websocket.IsCloseError(err, websocket.CloseNormalClosure) {
+				log.Printf("websocket closed normally: %v", err)
+			} else {
+				log.Printf("other websocket error: %v", err)
+			}
 			break
 		}
 
